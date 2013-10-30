@@ -15,6 +15,22 @@ canvas.height = h;
 canvas.retinaResolutionEnabled = true;
 canvas.MSAAEnabled = false;
 
+
+var wabbitTexture;
+
+var bunnys = [];
+var gravity = 0.75//1.5 ;
+
+var maxX = w;
+var minX = 0;
+var maxY = h;
+var minY = 0;
+
+var startBunnyCount = 300;
+var isAdding = false;
+var count = 0;
+var container;
+
 var assetsToLoader = ["data/spineboy.atlas", "data/spineboy.json"];
 
 // create a new loader
@@ -34,16 +50,14 @@ var stage = new PIXI.Stage(0xFFFFFF, false);
 var renderer = new PIXI.WebGLRenderer(w, h, canvas);
 
 function onAssetsLoaded() {
-    var num = 15,
+    var num = 7,
         spineBoy = [];
 
     for (var i = 0; i < num; i += 1) {
         spineBoy[i] = new PIXI.Spine("data/spineboy.json");
 
-        spineBoy[i].position.x = i * 40 + 40;
+        spineBoy[i].position.x = i * 120 + 120;
         spineBoy[i].position.y = h;
-
-        spineBoy[i].scale.x = spineBoy[i].scale.y = h / 2400;
 
         // set up the mixes!
         spineBoy[i].stateData.setMixByName("walk", "jump", 0.2);
@@ -62,15 +76,66 @@ function onAssetsLoaded() {
             spineBoy[j].state.setAnimationByName("jump", false);
             spineBoy[j].state.addAnimationByName("walk", true);
         }
-
     });
+
+
+    wabbitTexture = new PIXI.Texture.fromImage("bunny.png");
+
+        count = startBunnyCount;
+
+        container = new PIXI.DisplayObjectContainer();
+        stage.addChild(container);
+
+        for (var i = 0; i < startBunnyCount; i++) {
+            var bunny = new PIXI.Sprite(wabbitTexture, {x: 0, y: 0, width: 26, height: 37});
+            bunny.speedX = Math.random() * 10;
+            bunny.speedY = (Math.random() * 10) - 5;
+
+            bunny.anchor.x = 0.5;
+            bunny.anchor.y = 1;
+            bunnys.push(bunny);
+
+            container.addChild(bunny);
+        }
+
+
 
 
 }
 
 function animate() {
-    
+
     requestAnimationFrame(animate);
+    for (var i = 0; i < bunnys.length; i++) {
+        var bunny = bunnys[i];
+
+        bunny.position.x += bunny.speedX;
+        bunny.position.y += bunny.speedY;
+        bunny.speedY += gravity;
+
+        if (bunny.position.x > maxX) {
+            bunny.speedX *= -1;
+            bunny.position.x = maxX;
+        }
+        else if (bunny.position.x < minX) {
+            bunny.speedX *= -1;
+            bunny.position.x = minX;
+        }
+
+        if (bunny.position.y > maxY) {
+            bunny.speedY *= -0.85;
+            bunny.position.y = maxY;
+            bunny.spin = (Math.random() - 0.5) * 0.2
+            if (Math.random() > 0.5) {
+                bunny.speedY -= Math.random() * 6;
+            }
+        }
+        else if (bunny.position.y < minY) {
+            bunny.speedY = 0;
+            bunny.position.y = minY;
+        }
+
+    }
     renderer.render(stage);
 
 }

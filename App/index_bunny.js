@@ -23,7 +23,7 @@ var minX = 0;
 var maxY = h;
 var minY = 0;
 
-var startBunnyCount = 400;
+var startBunnyCount = 550;
 var isAdding = false;
 var count = 0;
 var container;
@@ -31,10 +31,12 @@ var container;
 
 function onReady() {
 
-    renderer = PIXI.autoDetectRenderer(w, h, canvas);
-    stage = new PIXI.Stage(0xFFFFFF);
+// create an new instance of a pixi stage
+    stage = new PIXI.Stage(0xFFFFFF, false);
 
-    requestAnimFrame(update);
+// create a renderer instance
+    renderer = new PIXI.WebGLRenderer(w, h, canvas);
+
 
     wabbitTexture = new PIXI.Texture.fromImage("bunny.png");
 
@@ -66,6 +68,7 @@ function onReady() {
     renderer.view.touchend = function () {
         isAdding = false;
     }
+    requestAnimFrame(update);
 
 }
 

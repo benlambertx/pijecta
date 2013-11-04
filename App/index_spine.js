@@ -26,7 +26,7 @@ var minX = 0;
 var maxY = h;
 var minY = 0;
 
-var startBunnyCount = 250;
+var startBunnyCount = 300;
 var isAdding = false;
 var count = 0;
 var container;
@@ -45,21 +45,13 @@ loader.load();
 
 // create an new instance of a pixi stage
 var stage = new PIXI.Stage(0xFFFFFF, false);
-var count = 0;
 
 // create a renderer instance
 var renderer = new PIXI.WebGLRenderer(w, h, canvas);
 
-var displacementTexture = PIXI.Texture.fromImage("displacement_map.jpg");
-var displacementFilter = new PIXI.DisplacementFilter(displacementTexture);
-var filters = [];
-filters.push(displacementFilter);
-
 function onAssetsLoaded() {
     var num = 7,
         spineBoy = [];
-
-    stage.filters = filters;
 
     for (var i = 0; i < num; i += 1) {
         spineBoy[i] = new PIXI.Spine("data/spineboy.json");
@@ -114,11 +106,6 @@ function onAssetsLoaded() {
 function animate() {
 
     requestAnimationFrame(animate);
-
-    count += 0.1;
-    displacementFilter.offset.x = count * 10//blurAmount * 40;
-    displacementFilter.offset.y = count * 10
-
     for (var i = 0; i < bunnys.length; i++) {
         var bunny = bunnys[i];
 
